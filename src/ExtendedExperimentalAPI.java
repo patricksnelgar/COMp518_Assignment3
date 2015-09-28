@@ -5,9 +5,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 /**
- * Created by Patrick on 26-Sep-15.
+ * Created by Patrick Snelgar on 26-Sep-15.
+ * Name: Extended Experimental API
+ * Description: Exposes a method that takes a file and encryption method, the file is then encrypted using a fixed 128bit
+ *              hexidecimal key following the AES standard and the given encryption method (ECB, CBC or CFB)
  */
 public class ExtendedExperimentalAPI {
     private Cipher enc_cipher;
@@ -23,6 +27,11 @@ public class ExtendedExperimentalAPI {
         tester.EncryptFile("Image4Assignment.bmp", "ECB");
     }
 
+    /***
+     *
+     * @param file_path
+     * @param enc_method
+     */
     public void EncryptFile(String file_path, String enc_method){
         process_as_BMP = false;
         file_ex = getFileExtension(file_path);
@@ -31,21 +40,32 @@ public class ExtendedExperimentalAPI {
         if(file_ex.equals("bmp"))
             process_as_BMP = true;
         byte[] file_contents = getFileContents(file_path);
-        byte[] file_header;
-        if(process_as_BMP)
-            file_header = getFileHeader(file_contents);
+        byte[] file_header = null;
+        if(process_as_BMP) {
+            file_header = Arrays.copyOfRange(file_contents, 0, 54);
+            file_contents = Arrays.copyOfRange(file_contents, 54, file_contents.length);
+        }
 
         initAESKey("770A8A65DA156D24EE2A093277530142");
         initCipher(enc_method);
 
         try {
-            saveFileToDisk(enc_cipher.doFinal(file_contents));
+            byte[] enc_contents = enc_cipher.doFinal(file_contents);
+            if(process_as_BMP) {
+                writeAsImage(file_header, enc_contents);
+            } else {
+                saveFileToDisk(enc_contents);
+            }
         } catch (Exception ex){
             ex.printStackTrace();
         }
 
     }
 
+    /***
+     *
+     * @param enc_method
+     */
     private void initCipher(String enc_method){
         try {
             enc_cipher = Cipher.getInstance("AES/" + enc_method + "/PKCS5Padding");
@@ -57,15 +77,20 @@ public class ExtendedExperimentalAPI {
         }
     }
 
+    /***
+     *
+     * @param key
+     */
     private void initAESKey(String key){
         byte[] keyData = DatatypeConverter.parseHexBinary(key);
         enc_key = new SecretKeySpec(keyData, "AES");
     }
 
-    private byte[] getFileHeader(byte[] file_contents){
-        return null;
-    }
-
+    /***
+     *
+     * @param file_path
+     * @return
+     */
     private byte[] getFileContents(String file_path){
         try {
             return Files.readAllBytes(Paths.get(file_path));
@@ -78,30 +103,57 @@ public class ExtendedExperimentalAPI {
         return null;
     }
 
+    /***
+     *
+     * @param file_contents
+     */
     private void saveFileToDisk(byte[] file_contents){
         String file_out = file_name + "-" + file_enc_method + "." + file_ex;
         try {
-            if(process_as_BMP) {
-               // TODO: generate BMP file header
-               // then write to disk
-            } else {
-                FileOutputStream enc_file_output = new FileOutputStream(file_out);
-                enc_file_output.write(file_contents);
-                enc_file_output.flush();
-                enc_file_output.close();
-            }
+            FileOutputStream enc_file_output = new FileOutputStream(file_out);
+            enc_file_output.write(file_contents);
+            enc_file_output.flush();
+            enc_file_output.close();
         } catch (Exception ex){
             System.out.println("Error writing file to:" + file_out);
             ex.printStackTrace();
-
         }
     }
 
+    /***
+     *
+     * @param header
+     * @param enc_file
+     */
+    private void writeAsImage(byte[] header, byte[] enc_file){
+        String out_file_name = file_name + "-" + file_enc_method + "." + file_ex;
+        try {
+            FileOutputStream fo = new FileOutputStream(out_file_name);
+            fo.write(header);
+            fo.write(enc_file);
+            fo.flush();
+            fo.close();
+        } catch (Exception ex){
+            System.out.println("Error writing file: " + out_file_name);
+            ex.printStackTrace();
+        }
+    }
+
+    /***
+     *
+     * @param file_path
+     * @return
+     */
     private String getFileExtension(String file_path){
         String[] split = file_path.split("\\.");
         return split[split.length - 1];
     }
 
+    /***
+     *
+     * @param file_path
+     * @return
+     */
     private String getFileName(String file_path){
         String[] split = file_path.split("\\\\");
         String[] file = split[split.length-1].split("\\.");
