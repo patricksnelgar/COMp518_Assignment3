@@ -8,10 +8,10 @@ public class CaesarAPI {
     public static void main(String[] args) {
         // For API testing purposes only
         CaesarAPI t = new CaesarAPI();
-       // System.out.println(t.Encrypt("I am currently studying Cyber Security module at the Department of Computer Science, University of Waikato.", 16));
-        //System.out.println(t.Decrypt("Zbydomdsxq kx SD sxpbkcdbemdebo sxmvenoc gsno bkxqo yp kmdsfsdsoc drkd rkfo dy lo zobpybwon sx cixm gsdr okmr ydrob. Sx drsc vomdebo, go ohzvybo dro lkcsmc yp lesvnsxq kx SD cicdow drkd sc cdboxqdroxon dy lo k comebo. Dro cdboxqdroxsxq zbymocc boaesboc rkbnoxsxq nsppoboxd mywzyxoxdc yp dro SD sxpbkcdbemdebo sxmvensxq Yzobkdsxq Cicdowc, Xodgybuc kxn Kzzvsmkdsyxc.", 10));
-        //t.Cryptanlysis("SHEM veskiui ed iyn cqzeh jxucui: Fheludqdsu, Kiuh-Sudjhysyjo, Lyikqbyiqjyed, Usedecysi, Xqhtmqhu, qdt Jeebi & Tqjqiuji. Jewujxuh, jxuiu iyn jxucu udqrbu jxu hujkhd ev sedjheb ev tqjq je kiuhi, jxuhuro hutksydw hubyqdsu ed jxyht-fqhjo ludtehi eh jhkij hubqjyedixyfi seccedbo vekdt yd ceij soruh iuskhyjo sedjhqsji jetqo.");
-        System.out.println(t.Encrypt("A", 10));
+        System.out.println(t.Encrypt("I am currently studying Cyber Security module at the Department of Computer Science, University of Waikato.", 16));
+        System.out.println(t.Decrypt("Zbydomdsxq kx SD sxpbkcdbemdebo sxmvenoc gsno bkxqo yp kmdsfsdsoc drkd rkfo dy lo zobpybwon sx cixm gsdr okmr ydrob. Sx drsc vomdebo, go ohzvybo dro lkcsmc yp lesvnsxq kx SD cicdow drkd sc cdboxqdroxon dy lo k comebo. Dro cdboxqdroxsxq zbymocc boaesboc rkbnoxsxq nsppoboxd mywzyxoxdc yp dro SD sxpbkcdbemdebo sxmvensxq Yzobkdsxq Cicdowc, Xodgybuc kxn Kzzvsmkdsyxc.", 10));
+        t.Cryptanlysis("SHEM veskiui ed iyn cqzeh jxucui: Fheludqdsu, Kiuh-Sudjhysyjo, Lyikqbyiqjyed, Usedecysi, Xqhtmqhu, qdt Jeebi & Tqjqiuji. Jewujxuh, jxuiu iyn jxucu udqrbu jxu hujkhd ev sedjheb ev tqjq je kiuhi, jxuhuro hutksydw hubyqdsu ed jxyht-fqhjo ludtehi eh jhkij hubqjyedixyfi seccedbo vekdt yd ceij soruh iuskhyjo sedjhqsji jetqo.");
+        //System.out.println(t.Encrypt("A", 10));
     }
 
     /***
@@ -42,13 +42,13 @@ public class CaesarAPI {
         for(char c : text.toCharArray()){
             // 97 = 'a' / 123 = 'z'
             if( 97 <= c && c < 123) {
-                System.out.println(c + key + ":" + (c+key)%26 + ":" + ((c+key)%26+97));
+                //System.out.println(c + key + ":" + (c+key)%26 + ":" + ((c+key)%26+97));
                 // Requires an offset of 7 to balance the modulo operation
                 // difference between given key and the result of the modulo operation after adding the key and character.
                 output += (char) ((c + key + 7) % 26 + 97);
             // 65 = 'A' / 91 = 'Z'
             } else if ( 65 <= c && c < 91){
-                System.out.println(c + key + ":" + (c+key)%26 + ":" + ((c+key)%26+65));
+                //System.out.println(c + key + ":" + (c+key)%26 + ":" + ((c+key)%26+65));
                 // Offset of 13 is calculated by calculating the difference between
                 // the given key and the key + character value after modulo operation.
                 output += (char) ((c + key + 13) % 26 + 65);
